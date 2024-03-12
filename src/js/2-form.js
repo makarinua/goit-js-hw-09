@@ -25,7 +25,7 @@ feedbackForm.addEventListener('submit', function (event) {
     JSON.parse(localStorage.getItem('feedback-form-state')) || {};
 
   if (!currentState.email || !currentState.message) {
-    alert('Please fill email and message fields before submitting.');
+    alert('Fill in the email field and write a message.');
     return;
   }
 
