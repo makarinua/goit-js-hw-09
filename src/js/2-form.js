@@ -1,40 +1,39 @@
-const form = document.querySelector('.feedback-form');
+"use strict";
 
-const saveForm = () => {
-  const formData = {
-    email: form.elements.email.value.trim(),
-    message: form.elements.message.value.trim(),
-  };
-  localStorage.setItem('feedback-form-state', JSON.stringify(formData));
-};
+const feedbackForm = document.querySelector('.feedback-form');
 
-const loadForm = () => {
-  const saveData = localStorage.getItem('feedback-form-state');
-  if (saveData) {
-    const { email, message } = JSON.parse(saveData);
-    form.elements.email.value = email;
-    form.elements.message.value = message;
+const storedData =
+  JSON.parse(localStorage.getItem('feedback-form-state')) || {};
+
+feedbackForm.email.value = storedData.email || '';
+feedbackForm.message.value = storedData.message || '';
+
+feedbackForm.addEventListener('input', function (event) {
+  if (event.target.name === 'email' || event.target.name === 'message') {
+    const currentState = {
+      email: feedbackForm.email.value.trim(),
+      message: feedbackForm.message.value.trim(),
+    };
+    localStorage.setItem('feedback-form-state', JSON.stringify(currentState));
   }
-};
+});
 
-form.addEventListener('input', saveForm);
+feedbackForm.addEventListener('submit', function (event) {
+  event.preventDefault();
 
-window.addEventListener('load', loadForm);
+  const currentState =
+    JSON.parse(localStorage.getItem('feedback-form-state')) || {};
 
-form.addEventListener('submit', e => {
-  e.preventDefault();
-  localStorage.removeItem('feedback-form-state');
-  if (form.elements.email.value === '') {
-    alert('Please enter your email');
-  }
-  if (form.elements.message.value === '') {
-    alert('Please enter your message');
+  if (!currentState.email || !currentState.message) {
+    alert('Please fill email and message fields before submitting.');
+    return;
   }
 
-  console.log({
-    email: form.elements.email.value.trim(),
-    message: form.elements.message.value.trim(),
+  console.log('Form Data:', {
+    email: currentState.email,
+    message: currentState.message,
   });
 
-  form.reset();
+  localStorage.removeItem('feedback-form-state');
+  feedbackForm.reset();
 });
